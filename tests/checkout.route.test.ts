@@ -7,7 +7,7 @@ const rpcMock = vi.fn()
 const fromMock = vi.fn()
 
 vi.mock('@/lib/supabase/server', () => ({
-  createClient: async () => ({
+  createServerSupabaseClient: async () => ({
     auth: { getUser: getUserMock },
     rpc: rpcMock,
     from: fromMock
