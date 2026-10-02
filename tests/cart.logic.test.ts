@@ -2,6 +2,16 @@ import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
 import { CartProvider, useCart } from '../components/CartProvider'
 
+vi.mock('@/lib/supabase/client', () => ({
+  createClient: () => ({
+    from: () => ({
+      select: () => ({
+        in: () => Promise.resolve({ data: [] })
+      })
+    })
+  })
+}))
+
 describe('cart logic', () => {
   beforeEach(() => {
     localStorage.clear()
