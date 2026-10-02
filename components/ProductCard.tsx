@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BandArt } from "./BandArt";
+import { ProductImage } from "./ProductImage";
 import { formatNaira } from "@/lib/format";
 
 export function ProductCard({
@@ -16,20 +16,14 @@ export function ProductCard({
   imageUrl?: string | null;
 }) {
   return (
-    <Link href={`/products/${slug}`} style={{ textDecoration: "none" }}>
-      <div className="card">
-        <div className="art">
-          {imageUrl ? (
-            <img src={imageUrl} alt={name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-          ) : (
-            <BandArt slug={slug} />
-          )}
-        </div>
-        <div>
-          <h3 style={{ fontSize: "1rem" }}>{name}</h3>
-          <p style={{ color: "var(--muted)", fontSize: "0.875rem" }}>{category}</p>
-        </div>
-        <p>{formatNaira(priceNgn)}</p>
+    <Link href={`/products/${slug}`} className="tile">
+      <div className="tile-frame">
+        <ProductImage slug={slug} name={name} imageUrl={imageUrl} />
+      </div>
+      <h3 className="tile-name">{name}</h3>
+      <div className="tile-meta">
+        <span className="tile-category">{category}</span>
+        <span className="tile-price">{formatNaira(priceNgn)}</span>
       </div>
     </Link>
   );

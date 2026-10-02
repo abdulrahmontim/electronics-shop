@@ -27,27 +27,40 @@ export default async function Home({
   return (
     <div>
       <section className="hero">
-        <Resistor />
-        <p style={{ textAlign: "center", marginTop: "1rem" }}>
-          Quality electronics parts for your projects
-        </p>
+        <div className="hero-copy">
+          <h1>Parts for the thing you are building this week.</h1>
+          <p className="hero-subhead">
+            Boards, sensors, tools and components for your bench.
+          </p>
+          <a className="pill" href="#shop">
+            Shop parts
+          </a>
+        </div>
+        <div className="hero-art">
+          <Resistor />
+        </div>
       </section>
-      <div className="chips">
-        <Link href="/" className={!validCat ? "active" : undefined}>
+
+      <section id="shop" className="chips" aria-label="Product categories">
+        <Link href="/" className={!validCat ? "chip active" : "chip"}>
           All
         </Link>
         {CATEGORIES.map((c) => (
           <Link
             key={c}
             href={`/?category=${encodeURIComponent(c)}`}
-            className={validCat === c ? "active" : undefined}
+            className={validCat === c ? "chip active" : "chip"}
           >
             {c}
           </Link>
         ))}
-      </div>
+      </section>
+
       {error && <div className="error">Products could not load</div>}
-      {products && products.length === 0 && <div className="notice">No products found</div>}
+      {products && products.length === 0 && (
+        <div className="notice">No products found</div>
+      )}
+
       <div className="grid">
         {products?.map((p) => (
           <ProductCard

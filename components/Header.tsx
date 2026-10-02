@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { SHOP_NAME } from "@/lib/config";
 import { useCart } from "./CartProvider";
 
 export function Header() {
@@ -26,7 +27,7 @@ export function Header() {
     <header>
       <nav>
         <Link href="/" className="logo">
-          Bench Supply
+          {SHOP_NAME}
         </Link>
         <div className="nav-links">
           <Link href="/">Shop</Link>
