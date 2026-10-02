@@ -48,12 +48,12 @@ function formatValue(b1: number, b2: number, m: number) {
   const mult = [1, 10, 100, 1000, 10000, 100000, 1000000][mIdx];
   const ohms = (d1 * 10 + d2) * mult;
   if (ohms >= 1000000) {
-    return (ohms / 1000000).toFixed(ohms % 1000000 === 0 ? 0 : 1) + " MO";
+    return (ohms / 1000000).toFixed(ohms % 1000000 === 0 ? 0 : 1) + " MOhms";
   }
   if (ohms >= 1000) {
-    return (ohms / 1000).toFixed(ohms % 1000 === 0 ? 0 : 1) + " kO";
+    return (ohms / 1000).toFixed(ohms % 1000 === 0 ? 0 : 1) + " kOhms";
   }
-  return ohms + " O";
+  return ohms + " Ohms";
 }
 
 export function Resistor() {

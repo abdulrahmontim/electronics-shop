@@ -20,7 +20,7 @@ export function ProductCard({
       <div className="card">
         <div className="art">
           {imageUrl ? (
-            <img src={imageUrl} alt={name} style={{ maxWidth: "100%", maxHeight: "100%" }} />
+            <img src={imageUrl} alt={name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           ) : (
             <BandArt slug={slug} />
           )}

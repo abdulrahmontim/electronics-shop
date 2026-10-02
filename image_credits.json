@@ -1,0 +1,86 @@
+{
+  "arduino-uno-r3-compatible-board": {
+    "title": "Arduino Uno - R3.jpg",
+    "author": "SparkFun Electronics from Boulder, USA",
+    "license": "CC BY 2.0",
+    "source": "Wikimedia Commons",
+    "page": "https://commons.wikimedia.org/wiki/File:Arduino_Uno_-_R3.jpg"
+  },
+  "esp32-devkit-v1": {
+    "title": "ESP32-S3 on paper.jpg",
+    "author": "VectorVoyager",
+    "license": "CC BY-SA 4.0",
+    "source": "Wikimedia Commons",
+    "page": "https://commons.wikimedia.org/wiki/File:ESP32-S3_on_paper.jpg"
+  },
+  "breadboard-830-points": {
+    "title": "400 points breadboard.jpg",
+    "author": "oomlout",
+    "license": "CC BY-SA 2.0",
+    "source": "Wikimedia Commons",
+    "page": "https://commons.wikimedia.org/wiki/File:400_points_breadboard.jpg"
+  },
+  "jumper-wire-set-120-pieces": {
+    "title": "Jumper Wires with Crocodile Clips.jpg",
+    "author": "oomlout",
+    "license": "CC BY-SA 2.0",
+    "source": "Wikimedia Commons",
+    "page": "https://commons.wikimedia.org/wiki/File:Jumper_Wires_with_Crocodile_Clips.jpg"
+  },
+  "resistor-kit-600-pieces": {
+    "title": "3 Resistors.jpg",
+    "author": "Afrank99",
+    "license": "CC BY-SA 2.5",
+    "source": "Wikimedia Commons",
+    "page": "https://commons.wikimedia.org/wiki/File:3_Resistors.jpg"
+  },
+  "capacitor-kit-300-pieces": {
+    "title": "Electrolytic capacitors-P1090328.JPG",
+    "author": "Elcap",
+    "license": "CC0",
+    "source": "Wikimedia Commons",
+    "page": "https://commons.wikimedia.org/wiki/File:Electrolytic_capacitors-P1090328.JPG"
+  },
+  "led-kit-300-pieces": {
+    "title": "Bins of assorted color LEDs (17174139098).jpg",
+    "author": "Kevin Savetz",
+    "license": "CC BY 2.0",
+    "source": "Wikimedia Commons",
+    "page": "https://commons.wikimedia.org/wiki/File:Bins_of_assorted_color_LEDs_(17174139098).jpg"
+  },
+  "ne555-timer-ic-pack-of-10": {
+    "title": "NE555 DIP & SOIC.jpg",
+    "author": "Swift.Hg",
+    "license": "CC BY-SA 3.0",
+    "source": "Wikimedia Commons",
+    "page": "https://commons.wikimedia.org/wiki/File:NE555_DIP_%26_SOIC.jpg"
+  },
+  "soldering-iron-60-w-adjustable": {
+    "title": "Electric soldering iron.jpg",
+    "author": "Александр Александрович Москвин",
+    "license": "CC BY-SA 4.0",
+    "source": "Wikimedia Commons",
+    "page": "https://commons.wikimedia.org/wiki/File:Electric_soldering_iron.jpg"
+  },
+  "digital-multimeter": {
+    "title": "2017 Cyfrowy miernik uniwersalny.jpg",
+    "author": "Jacek Halicki",
+    "license": "CC BY-SA 4.0",
+    "source": "Wikimedia Commons",
+    "page": "https://commons.wikimedia.org/wiki/File:2017_Cyfrowy_miernik_uniwersalny.jpg"
+  },
+  "sg90-micro-servo": {
+    "title": "Tower Pro SG90 micro servo motor.jpg",
+    "author": "Suyash Dwivedi",
+    "license": "CC BY-SA 4.0",
+    "source": "Wikimedia Commons",
+    "page": "https://commons.wikimedia.org/wiki/File:Tower_Pro_SG90_micro_servo_motor.jpg"
+  },
+  "hc-sr04-ultrasonic-sensor": {
+    "title": "SparkFun HC-SR04 Ultrasonic-Sensor 13959-01a.jpg",
+    "author": "SparkFun",
+    "license": "CC BY 2.0",
+    "source": "Wikimedia Commons",
+    "page": "https://commons.wikimedia.org/wiki/File:SparkFun_HC-SR04_Ultrasonic-Sensor_13959-01a.jpg"
+  }
+}

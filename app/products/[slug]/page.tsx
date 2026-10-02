@@ -22,7 +22,7 @@ export default async function ProductPage({ params }: any) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
       <div className="art" style={{ maxWidth: "400px", margin: "0 auto" }}>
-        {product.image_url ? <img src={product.image_url} alt={product.name} style={{ maxWidth: "100%", maxHeight: "100%" }} /> : <BandArt slug={product.slug} />}
+        {product.image_url ? <img src={product.image_url} alt={product.name} style={{ width: "100%", height: "100%", objectFit: "contain" }} /> : <BandArt slug={product.slug} />}
       </div>
       <div>
         <h1>{product.name}</h1>

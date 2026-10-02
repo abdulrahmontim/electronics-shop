@@ -7,7 +7,9 @@ An electronics parts shop built with Next.js 15, Supabase, and Mailgun.
 1. Create a new Supabase project at [supabase.com](https://supabase.com).
 2. Go to SQL Editor and run `supabase/schema.sql` first.
 3. Run `supabase/seed.sql` to populate products.
-4. Copy your Project URL and anon public key from Settings > API.
+4. Product photos already live in `public/products/`. Run `supabase/set_images.sql` in the SQL Editor to point each product at its photo. Skip this and products fall back to the generated resistor art.
+5. To fetch or replace photos later: `python fetch_product_images.py` (see `IMAGE_CREDITS.md` for the authors and licences it records).
+6. Copy your Project URL and anon public key from Settings > API.
 
 ## 2. Google sign-in
 

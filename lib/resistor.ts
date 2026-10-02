@@ -42,10 +42,10 @@ export function formatResistorValue(band1: number, band2: number, band3: number)
   const mult = MULTIPLIER_COLORS[mIdx].value;
   const ohms = base * mult;
   if (ohms >= 1000000) {
-    return (ohms / 1000000).toFixed(ohms % 1000000 === 0 ? 0 : 1) + " MO";
+    return (ohms / 1000000).toFixed(ohms % 1000000 === 0 ? 0 : 1) + " MOhms";
   }
   if (ohms >= 1000) {
-    return (ohms / 1000).toFixed(ohms % 1000 === 0 ? 0 : 1) + " kO";
+    return (ohms / 1000).toFixed(ohms % 1000 === 0 ? 0 : 1) + " kOhms";
   }
   return ohms + " O";
 }
