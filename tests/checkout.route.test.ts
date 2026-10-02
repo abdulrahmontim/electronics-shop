@@ -6,7 +6,7 @@ const getUserMock = vi.fn()
 const rpcMock = vi.fn()
 const fromMock = vi.fn()
 
-vi.mock('../lib/supabase/server', () => ({
+vi.mock('@/lib/supabase/server', () => ({
   createClient: async () => ({
     auth: { getUser: getUserMock },
     rpc: rpcMock,
@@ -14,11 +14,11 @@ vi.mock('../lib/supabase/server', () => ({
   })
 }))
 
-vi.mock('../lib/mailgun', () => ({
+vi.mock('@/lib/mailgun', () => ({
   sendOrderConfirmation: vi.fn().mockResolvedValue(undefined)
 }))
 
-import { POST } from '../app/api/checkout/route'
+import { POST } from '@/app/api/checkout/route'
 
 describe('POST /api/checkout', () => {
   beforeEach(() => {
