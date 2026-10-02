@@ -1,5 +1,6 @@
 import "./globals.css";
 import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import { CartProvider } from "@/components/CartProvider";
 
 export const metadata = {
@@ -26,9 +27,10 @@ export default function RootLayout({
         <a href="#main" className="skip-link">
           Skip to main content
         </a>
-        <CartProvider>
+<CartProvider>
           <Header />
           <main id="main">{children}</main>
+          <Footer />
         </CartProvider>
       </body>
     </html>

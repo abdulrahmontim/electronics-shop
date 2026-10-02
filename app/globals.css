@@ -217,6 +217,47 @@ textarea {
   width: 100%;
 }
 
+.prose {
+  max-width: 60ch;
+}
+
+.prose h2 {
+  margin-top: 2rem;
+}
+
+.prose ul {
+  padding-left: 1.25rem;
+  margin: 0.75rem 0;
+}
+
+.prose li {
+  margin-bottom: 0.5rem;
+}
+
+.prose p,
+.prose li {
+  margin-bottom: 0.75rem;
+}
+
+footer {
+  margin-top: 3rem;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--hairline);
+}
+
+.footer-name {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  list-style: none;
+  padding: 0;
+}
+
 .notice {
   padding: 0.75rem 1rem;
   background: var(--panel);
