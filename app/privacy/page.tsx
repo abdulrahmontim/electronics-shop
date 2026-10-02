@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { SHOP_CONTACT_EMAIL } from "@/lib/config";
 
 export const metadata: Metadata = {
   title: "Privacy - Bench Supply",
@@ -58,16 +59,17 @@ export default function PrivacyPage() {
 
       <h2>Asking for deletion</h2>
       <p>
-        You can ask us to delete your account and order history. Contact the shop
-        owner using the address your order confirmation email came from, and say
-        which account you want removed. We will find the account by its Google
-        email address and delete what we hold for it.
+        You can ask us to delete your account and order history. Email{" "}
+        <a href={`mailto:${SHOP_CONTACT_EMAIL}`}>{SHOP_CONTACT_EMAIL}</a> and
+        say which account you want removed. We will find the account by its
+        Google email address and delete what we hold for it.
       </p>
 
       <h2>Questions</h2>
       <p>
-        If anything here is unclear, ask the shop owner before you order. You can
-        also read the <Link href="/terms">terms</Link>.
+        If anything here is unclear, email{" "}
+        <a href={`mailto:${SHOP_CONTACT_EMAIL}`}>{SHOP_CONTACT_EMAIL}</a> before
+        you order. You can also read the <Link href="/terms">terms</Link>.
       </p>
     </div>
   );
