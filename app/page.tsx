@@ -33,14 +33,14 @@ export default async function Home({
         </p>
       </section>
       <div className="chips">
-        <Link href="/" className={chip }>
+        <Link href="/" className={!validCat ? "active" : undefined}>
           All
         </Link>
         {CATEGORIES.map((c) => (
           <Link
             key={c}
-            href={/?category=}
-            className={chip }
+            href={`/?category=${encodeURIComponent(c)}`}
+            className={validCat === c ? "active" : undefined}
           >
             {c}
           </Link>

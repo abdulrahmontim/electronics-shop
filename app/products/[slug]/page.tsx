@@ -3,11 +3,10 @@ import { notFound } from "next/navigation";
 import { BandArt } from "@/components/BandArt";
 import { AddToCart } from "@/components/AddToCart";
 import { formatNaira } from "@/lib/format";
-import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata({ params }: any): Promise<Metadata> {
+export async function generateMetadata({ params }: any) {
   const { slug } = await params;
   const supabase = await createServerSupabaseClient();
   const { data } = await supabase.from("products").select("name").eq("slug", slug).single();

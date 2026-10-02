@@ -16,7 +16,7 @@ export function ProductCard({
   imageUrl?: string | null;
 }) {
   return (
-    <Link href={/products/} style={{ textDecoration: "none" }}>
+    <Link href={`/products/${slug}`} style={{ textDecoration: "none" }}>
       <div className="card">
         <div className="art">
           {imageUrl ? (

@@ -2,7 +2,7 @@ export function formatNaira(n: number): string {
   if (!Number.isInteger(n) || n < 0) {
     n = Math.max(0, Math.round(n));
   }
-  return "?" + new Intl.NumberFormat("en-NG").format(n);
+  return "₦" + new Intl.NumberFormat("en-NG").format(n);
 }
 
 export function formatDate(d: Date | string): string {

@@ -1,9 +1,8 @@
-import type { Metadata } from "next";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { CartProvider } from "@/components/CartProvider";
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Bench Supply - Electronics parts shop",
   description: "Boards, sensors, tools, components from Bench Supply",
 };
