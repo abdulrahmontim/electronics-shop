@@ -203,7 +203,7 @@ nav {
 .resistor-widget {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
   width: 100%;
 }
@@ -212,38 +212,58 @@ nav {
   display: flex;
   align-items: center;
   width: 100%;
-  max-width: 400px;
 }
 
 .resistor-lead {
-  flex: 1;
+  flex: 1 1 0;
+  min-width: 0;
   height: 5px;
 }
 
 .resistor-body {
   display: flex;
   align-items: stretch;
-  justify-content: flex-start;
   gap: 16px;
   padding: 0 44px;
+  box-sizing: border-box;
+  overflow: hidden;
   height: 100px;
   width: 400px;
-  max-width: 100%;
-  min-width: 0;
+  max-width: 70%;
+  flex: 0 1 auto;
   border-radius: 50px;
 }
 
 .resistor-band {
+  flex: 0 0 22px;
   width: 22px;
   height: 100%;
   padding: 0;
+  margin: 0;
   border: 0;
   border-radius: 0;
-  background-clip: padding-box;
+  opacity: 1;
+  filter: none;
+  mix-blend-mode: normal;
+  background-color: transparent;
+  box-shadow: none;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.resistor-band:hover {
+  filter: brightness(1.1);
+}
+
+.resistor-band:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: -3px;
 }
 
 .resistor-band-tolerance {
   margin-left: auto;
+  cursor: default;
 }
 
 .resistor-value {
@@ -253,12 +273,13 @@ nav {
   line-height: 1;
   letter-spacing: -0.02em;
   max-width: none;
+  text-align: left;
 }
 
 .resistor-hint {
   font-size: 15px;
   color: var(--muted);
-  text-align: center;
+  text-align: left;
   max-width: 34ch;
 }
 
@@ -502,18 +523,23 @@ footer {
     text-align: left;
   }
 
+  .resistor-value {
+    font-size: 34px;
+  }
+}
+
+@media (max-width: 520px) {
   .resistor-body {
+    width: 100%;
+    max-width: 100%;
     height: 80px;
-    padding: 0 24px;
+    padding: 0 28px;
     gap: 12px;
   }
 
   .resistor-band {
-    width: 16px;
-  }
-
-  .resistor-value {
-    font-size: 34px;
+    flex-basis: 18px;
+    width: 18px;
   }
 }
 

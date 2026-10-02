@@ -4,12 +4,25 @@ import { useState } from "react";
 import {
   BAND_COLORS,
   MULTIPLIER_COLORS,
-  TOLERANCE_COLOR,
   formatResistorValue,
 } from "@/lib/resistor";
 
 const LEAD_COLOR = "#9AA1AD";
 const BODY_COLOR = "#3E6FA3";
+const TOLERANCE_COLOR = "#C9A24A";
+
+// Hero band colours by BAND_COLORS index. Yellow and violet are overridden here
+// because the hero needs the saturated versions; lib/resistor.ts still holds the
+// lighter ones used for product art, so that file is deliberately left unchanged.
+const HERO_BAND_COLORS = BAND_COLORS.map((band, i) => {
+  if (band.label === "yellow") return { ...band, color: "#f2b705" };
+  if (band.label === "violet") return { ...band, color: "#7a4fb5" };
+  return band;
+});
+
+const HERO_MULTIPLIER_COLORS = MULTIPLIER_COLORS.map((band) =>
+  band.label === "yellow" ? { ...band, color: "#f2b705" } : band,
+);
 
 // The shared formatter returns ASCII units so it stays testable; the hero shows the symbol.
 function toDisplayValue(value: string): string {
@@ -21,9 +34,9 @@ export function Resistor() {
   const [band2, setBand2] = useState(7);
   const [band3, setBand3] = useState(2);
 
-  const first = BAND_COLORS[band1];
-  const second = BAND_COLORS[band2];
-  const multiplier = MULTIPLIER_COLORS[band3];
+  const first = HERO_BAND_COLORS[band1];
+  const second = HERO_BAND_COLORS[band2];
+  const multiplier = HERO_MULTIPLIER_COLORS[band3];
   const value = toDisplayValue(formatResistorValue(band1, band2, band3));
 
   const bands = [
@@ -49,9 +62,9 @@ export function Resistor() {
 
   return (
     <div className="resistor-widget">
-      <div className="resistor" style={{ background: BODY_COLOR }}>
-        <span className="resistor-lead resistor-lead-left" style={{ background: LEAD_COLOR }} />
-        <div className="resistor-body">
+      <div className="resistor">
+        <span className="resistor-lead" style={{ background: LEAD_COLOR }} />
+        <div className="resistor-body" style={{ background: BODY_COLOR }}>
           {bands.map((band) => (
             <button
               key={band.role}
@@ -68,7 +81,7 @@ export function Resistor() {
             aria-hidden="true"
           />
         </div>
-        <span className="resistor-lead resistor-lead-right" style={{ background: LEAD_COLOR }} />
+        <span className="resistor-lead" style={{ background: LEAD_COLOR }} />
       </div>
       <p className="resistor-value" aria-live="polite">
         {value}
