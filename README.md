@@ -28,6 +28,10 @@ An electronics parts shop built with Next.js 15, Supabase, and Mailgun.
 3. Get your private API key, domain name, and API base URL (EU accounts use `https://api.eu.mailgun.net`).
 4. Optionally set `MAILGUN_FROM` - defaults to `Bench Supply <postmaster@DOMAIN>`.
 
+## Contact address
+
+Set `NEXT_PUBLIC_SHOP_CONTACT_EMAIL` to the shop owner email address. It is shown on the `/privacy` page as the contact for questions and deletion requests. If it is left empty the page falls back to the placeholder `YOUR-EMAIL@gmail.com`, so set it locally and in Vercel before deploying.
+
 ## 4. Local development
 
 1. Install dependencies: `npm install`
