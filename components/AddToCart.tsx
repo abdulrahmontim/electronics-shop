@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { useCart } from "./CartProvider";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import { MAX_PER_ITEM, useCart } from "./CartProvider";
 
-const QUANTITIES = Array.from({ length: 10 }, (_, i) => i + 1);
+/** The selector never offers more than ten at a time. */
+const MAX_SELECTABLE = 10;
 
 export function AddToCart({
   productId,
@@ -20,9 +22,53 @@ export function AddToCart({
   slug: string;
   imageUrl?: string | null;
 }) {
-  const { addItem } = useCart();
+  const { items, addItem } = useCart();
   const [qty, setQty] = useState(1);
-  const [added, setAdded] = useState(false);
+  const [confirmation, setConfirmation] = useState("");
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(
+    () => () => {
+      if (timer.current) clearTimeout(timer.current);
+    },
+    []
+  );
+
+  const inCart =
+    items.find((i) => i.product_id === productId)?.quantity ?? 0;
+  const atMax = inCart >= MAX_PER_ITEM;
+  const maxSelectable = Math.max(
+    1,
+    Math.min(MAX_SELECTABLE, MAX_PER_ITEM - inCart)
+  );
+  const selected = Math.min(qty, maxSelectable);
+
+  const add = () => {
+    const requested = selected;
+    const added = addItem({
+      product_id: productId,
+      quantity: requested,
+      name: productName,
+      price_ngn: priceNgn,
+      in_stock: inStock,
+      slug,
+      image_url: imageUrl,
+    });
+
+    setQty(1);
+    if (added <= 0) {
+      setConfirmation(`Maximum ${MAX_PER_ITEM} per item.`);
+    } else if (added < requested) {
+      setConfirmation(
+        `Added ${added}. Maximum is ${MAX_PER_ITEM} per item.`
+      );
+    } else {
+      setConfirmation("Added to your cart");
+    }
+
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = setTimeout(() => setConfirmation(""), 4000);
+  };
 
   if (!inStock) {
     return (
@@ -32,7 +78,6 @@ export function AddToCart({
             Out of stock
           </button>
         </div>
-        <p className="added-note" aria-live="polite" />
       </div>
     );
   }
@@ -40,43 +85,48 @@ export function AddToCart({
   return (
     <div className="purchase">
       <div className="purchase-row">
-        <div className="purchase-qty">
-          <label htmlFor={`qty-${productId}`}>Quantity</label>
-          <select
-            id={`qty-${productId}`}
-            value={qty}
-            onChange={(e) => setQty(parseInt(e.target.value, 10) || 1)}
-          >
-            {QUANTITIES.map((n) => (
-              <option key={n} value={n}>
-                {n}
-              </option>
-            ))}
-          </select>
-        </div>
+        {!atMax && (
+          <div className="purchase-qty">
+            <label htmlFor={`qty-${productId}`}>Quantity</label>
+            <select
+              id={`qty-${productId}`}
+              value={selected}
+              onChange={(e) => setQty(parseInt(e.target.value, 10) || 1)}
+            >
+              {Array.from({ length: maxSelectable }, (_, i) => i + 1).map((n) => (
+                <option key={n} value={n}>
+                  {n}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
         <button
           type="button"
           className="btn btn-primary"
-          onClick={() => {
-            addItem({
-              product_id: productId,
-              quantity: qty,
-              name: productName,
-              price_ngn: priceNgn,
-              in_stock: inStock,
-              slug,
-              image_url: imageUrl,
-            });
-            setAdded(true);
-            setTimeout(() => setAdded(false), 2000);
-          }}
+          onClick={add}
+          disabled={atMax}
         >
           Add to cart
         </button>
       </div>
+
+      {atMax && (
+        <p className="purchase-limit">
+          Maximum {MAX_PER_ITEM} per item.{" "}
+          <Link href="/cart">Change the quantity in your cart.</Link>
+        </p>
+      )}
+
       <p className="added-note" aria-live="polite">
-        {added ? "Added to your cart" : ""}
+        {confirmation}
       </p>
+
+      {inCart > 0 && (
+        <p className="in-cart-note" aria-live="polite">
+          {inCart} in your cart
+        </p>
+      )}
     </div>
   );
 }

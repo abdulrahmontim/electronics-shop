@@ -813,6 +813,23 @@ header {
   margin-top: 0;
 }
 
+.in-cart-note {
+  font-size: 14px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+.purchase-limit {
+  font-size: 14px;
+  color: var(--muted);
+  max-width: 44ch;
+  margin-top: 12px;
+}
+
+.purchase-limit a {
+  text-decoration: underline;
+}
+
 /* Checkout */
 
 .checkout-layout {
