@@ -1,6 +1,7 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
-import { BandArt } from "@/components/BandArt";
+import Link from "next/link";
+import { ProductImage } from "@/components/ProductImage";
 import { AddToCart } from "@/components/AddToCart";
 import { formatNaira } from "@/lib/format";
 
@@ -19,18 +20,41 @@ export default async function ProductPage({ params }: any) {
   const supabase = await createServerSupabaseClient();
   const { data: product, error } = await supabase.from("products").select("*").eq("slug", slug).single();
   if (error || !product) notFound();
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
-      <div className="art" style={{ maxWidth: "400px", margin: "0 auto" }}>
-        {product.image_url ? <img src={product.image_url} alt={product.name} style={{ width: "100%", height: "100%", objectFit: "contain" }} /> : <BandArt slug={product.slug} />}
-      </div>
-      <div>
-        <h1>{product.name}</h1>
-        <p style={{ color: "var(--muted)" }}>{product.category}</p>
-        <p style={{ fontSize: "1.25rem" }}>{formatNaira(product.price_ngn)}</p>
-        <p>{product.description}</p>
-        <p>{product.in_stock ? "In stock" : "Out of stock"}</p>
-        <AddToCart productId={product.id} productName={product.name} priceNgn={product.price_ngn} inStock={product.in_stock} slug={product.slug} imageUrl={product.image_url} />
+    <div className="container page product">
+      <p className="crumb">
+        <Link href="/#shop">Shop</Link>
+        <span> / {product.category}</span>
+      </p>
+
+      <div className="product-layout">
+        <div className="product-media">
+          <ProductImage
+            slug={product.slug}
+            name={product.name}
+            imageUrl={product.image_url}
+          />
+        </div>
+
+        <div className="product-details">
+          <p className="product-category">{product.category}</p>
+          <h1>{product.name}</h1>
+          <p className="product-price">{formatNaira(product.price_ngn)}</p>
+          <p className="product-description">{product.description}</p>
+          <p className={product.in_stock ? "product-stock stock-in" : "product-stock stock-out"}>
+            {product.in_stock ? "In stock" : "Out of stock"}
+          </p>
+
+          <AddToCart
+            productId={product.id}
+            productName={product.name}
+            priceNgn={product.price_ngn}
+            inStock={product.in_stock}
+            slug={product.slug}
+            imageUrl={product.image_url}
+          />
+        </div>
       </div>
     </div>
   );

@@ -9,8 +9,9 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <div className="prose">
-      <h1>Privacy</h1>
+    <div className="container page">
+      <div className="prose">
+        <h1>Privacy</h1>
       <p>
         Bench Supply keeps the personal information it needs to run an order and
         nothing else. This page explains what that is.
@@ -71,6 +72,7 @@ export default function PrivacyPage() {
         <a href={`mailto:${SHOP_CONTACT_EMAIL}`}>{SHOP_CONTACT_EMAIL}</a> before
         you order. You can also read the <Link href="/terms">terms</Link>.
       </p>
+      </div>
     </div>
   );
 }

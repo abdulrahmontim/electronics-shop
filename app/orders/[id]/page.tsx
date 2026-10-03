@@ -1,11 +1,16 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
-import { formatNaira, formatDate } from "@/lib/format";
+import Link from "next/link";
+import { formatNaira, formatDay } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
 function isUuid(id: string) {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id);
+}
+
+function statusLabel(status: string): string {
+  return status ? status.charAt(0).toUpperCase() + status.slice(1) : "";
 }
 
 export default async function OrderDetailPage({
@@ -31,37 +36,57 @@ export default async function OrderDetailPage({
   }
 
   return (
-    <div>
+    <div className="container page order-detail">
       {email === "sent" && (
-        <div className="notice">Confirmation email sent to {order.email}</div>
+        <p className="msg msg-success">
+          Confirmation email sent to {order.email}.
+        </p>
       )}
       {email === "failed" && (
-        <div className="notice">
-          Your order is saved, but the confirmation email could not be sent.
-        </div>
+        <p className="msg msg-neutral">
+          Your order is saved, but the confirmation email could not be sent. You
+          can keep this page as your receipt.
+        </p>
       )}
-      <h1>Order #{order.id.slice(0, 8).toUpperCase()}</h1>
-      <p>Date: {formatDate(order.created_at)}</p>
-      <p>Status: {order.status}</p>
-      <h2>Items</h2>
-      {order.order_items?.map((it: any) => (
-        <div key={it.id} className="row">
-          <div>{it.product_name}</div>
-          <div>Qty: {it.quantity}</div>
-          <div>Unit: {formatNaira(it.unit_price_ngn)}</div>
-          <div>Total: {formatNaira(it.unit_price_ngn * it.quantity)}</div>
-        </div>
-      ))}
-      <h2>Delivery</h2>
-      <p>{order.full_name}</p>
-      <p>{order.phone}</p>
-      <p>{order.address}</p>
-      <p>
-        {order.city}, {order.state}
-      </p>
-      <p>
-        <strong>Total: {formatNaira(order.total_ngn)}</strong>
-      </p>
+
+      <h1>Order {order.id.slice(0, 8).toUpperCase()}</h1>
+      <p className="order-meta">{formatDay(order.created_at)}</p>
+      <p className="status-pill">{statusLabel(order.status)}</p>
+
+      <div className="order-lines">
+        {order.order_items?.map((it: any) => (
+          <div key={it.id} className="order-line">
+            <div className="order-line-name">
+              {it.product_name}
+              <div className="order-line-meta">
+                {it.quantity} × {formatNaira(it.unit_price_ngn)}
+              </div>
+            </div>
+            <span className="order-line-total">
+              {formatNaira(it.unit_price_ngn * it.quantity)}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      <div className="order-total-row">
+        <span>Total</span>
+        <span>{formatNaira(order.total_ngn)}</span>
+      </div>
+
+      <h2>Delivering to</h2>
+      <div className="address">
+        <p>{order.full_name}</p>
+        <p>{order.address}</p>
+        <p>
+          {order.city}, {order.state}
+        </p>
+        <p>{order.phone}</p>
+      </div>
+
+      <Link href="/#shop" className="btn btn-ghost order-continue">
+        Continue shopping
+      </Link>
     </div>
   );
 }

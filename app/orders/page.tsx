@@ -1,8 +1,12 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { formatNaira, formatDate } from "@/lib/format";
+import { formatNaira, formatDay } from "@/lib/format";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
+
+function statusLabel(status: string): string {
+  return status ? status.charAt(0).toUpperCase() + status.slice(1) : "";
+}
 
 export default async function OrdersPage() {
   const supabase = await createServerSupabaseClient();
@@ -11,10 +15,14 @@ export default async function OrdersPage() {
   } = await supabase.auth.getUser();
   if (!user) {
     return (
-      <div>
-        <h1>Orders</h1>
-        <p>You need to sign in to view your orders.</p>
-        <Link href="/login?next=/orders">Sign in</Link>
+      <div className="container page">
+        <h1>Your orders</h1>
+        <div className="empty">
+          <p>You need to sign in to see the orders you have placed.</p>
+          <Link href="/login?next=/orders" className="btn btn-primary">
+            Sign in
+          </Link>
+        </div>
       </div>
     );
   }
@@ -26,23 +34,35 @@ export default async function OrdersPage() {
     .order("created_at", { ascending: false });
 
   return (
-    <div>
-      <h1>Orders</h1>
+    <div className="container page">
+      <h1>Your orders</h1>
+
       {orders && orders.length === 0 && (
-        <div className="notice">
-          You have no orders yet. <Link href="/">Continue shopping</Link>
+        <div className="empty">
+          <p>
+            You have not ordered anything yet. Your orders will appear here once
+            you place one.
+          </p>
+          <Link href="/#shop" className="btn btn-primary">
+            Browse parts
+          </Link>
         </div>
       )}
-      {orders?.map((o) => (
-        <div key={o.id} className="row">
-          <div>
-            <Link href={`/orders/${o.id}`}>Order #{o.id.slice(0, 8).toUpperCase()}</Link>
-          </div>
-          <div>{formatDate(o.created_at)}</div>
-          <div>{o.status}</div>
-          <div>{formatNaira(o.total_ngn)}</div>
+
+      {orders && orders.length > 0 && (
+        <div className="orders-list">
+          {orders.map((o) => (
+            <Link key={o.id} href={`/orders/${o.id}`} className="order-row">
+              <div className="order-main">
+                <p className="order-ref">Order {o.id.slice(0, 8).toUpperCase()}</p>
+                <p className="order-date">{formatDay(o.created_at)}</p>
+              </div>
+              <span className="status-pill order-status">{statusLabel(o.status)}</span>
+              <span className="order-total">{formatNaira(o.total_ngn)}</span>
+            </Link>
+          ))}
         </div>
-      ))}
+      )}
     </div>
   );
 }

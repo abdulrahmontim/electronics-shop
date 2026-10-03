@@ -4,6 +4,7 @@ import { useCart } from "@/components/CartProvider";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { formatNaira } from "@/lib/format";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export function CheckoutForm() {
@@ -39,7 +40,7 @@ export function CheckoutForm() {
     state: "",
   });
 
-  if (!mounted) return <div>Loading...</div>;
+  if (!mounted) return <p className="muted">Loading checkout...</p>;
 
   const subtotal = items.reduce((sum, i) => sum + (i.price_ngn || 0) * i.quantity, 0);
   const valid = form.full_name.trim() && form.phone.trim() && form.address.trim() && form.city.trim() && form.state.trim() && items.length > 0;
@@ -75,44 +76,117 @@ export function CheckoutForm() {
   };
 
   return (
-    <form onSubmit={submit} className="form">
-      {error && <div className="error">{error}</div>}
-      <div className="input">
-        <label htmlFor="full_name">Full name</label>
-        <input id="full_name" value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} required />
-      </div>
-      <div className="input">
-        <label htmlFor="phone">Phone</label>
-        <input id="phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} required />
-      </div>
-      <div className="input">
-        <label htmlFor="address">Address</label>
-        <input id="address" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} required />
-      </div>
-      <div className="input">
-        <label htmlFor="city">City</label>
-        <input id="city" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} required />
-      </div>
-      <div className="input">
-        <label htmlFor="state">State</label>
-        <input id="state" value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} required />
-      </div>
-      <div>
-        <h2>Order summary</h2>
-        {items.map((i) => (
-          <div key={i.product_id} style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid var(--hairline)", padding: "0.5rem 0" }}>
-            <span>{i.name || "Item"} x {i.quantity}</span>
-            <span>{formatNaira((i.price_ngn || 0) * i.quantity)}</span>
-          </div>
-        ))}
-        <div style={{ display: "flex", justifyContent: "space-between", marginTop: "1rem" }}>
-          <strong>Total</strong>
-          <strong>{formatNaira(subtotal)}</strong>
+    <form onSubmit={submit} className="checkout-layout">
+      <div className="checkout-form">
+        <div className="field">
+          <label htmlFor="email">Email</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            value={user?.email ?? ""}
+            readOnly
+            autoComplete="email"
+          />
         </div>
+
+        <div className="field">
+          <label htmlFor="full_name">Full name</label>
+          <input
+            id="full_name"
+            name="full_name"
+            value={form.full_name}
+            onChange={(e) => setForm({ ...form, full_name: e.target.value })}
+            autoComplete="name"
+            required
+          />
+        </div>
+
+        <div className="field">
+          <label htmlFor="phone">Phone</label>
+          <input
+            id="phone"
+            name="phone"
+            type="tel"
+            value={form.phone}
+            onChange={(e) => setForm({ ...form, phone: e.target.value })}
+            autoComplete="tel"
+            required
+          />
+        </div>
+
+        <div className="field">
+          <label htmlFor="address">Address</label>
+          <input
+            id="address"
+            name="address"
+            value={form.address}
+            onChange={(e) => setForm({ ...form, address: e.target.value })}
+            autoComplete="street-address"
+            required
+          />
+        </div>
+
+        <div className="field-row">
+          <div className="field">
+            <label htmlFor="city">City</label>
+            <input
+              id="city"
+              name="city"
+              value={form.city}
+              onChange={(e) => setForm({ ...form, city: e.target.value })}
+              autoComplete="address-level2"
+              required
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="state">State</label>
+            <input
+              id="state"
+              name="state"
+              value={form.state}
+              onChange={(e) => setForm({ ...form, state: e.target.value })}
+              autoComplete="address-level1"
+              required
+            />
+          </div>
+        </div>
+
+        {error && <p className="msg msg-error">{error}</p>}
+
+        <button type="submit" className="btn btn-primary" disabled={!valid || submitting}>
+          {submitting ? "Placing order..." : `Place order, ${formatNaira(subtotal)}`}
+        </button>
       </div>
-      <button type="submit" disabled={!valid || submitting}>
-        {submitting ? "Placing order..." : `Place order, ${formatNaira(subtotal)}`}
-      </button>
+
+      <aside className="checkout-summary" aria-label="Order summary">
+        <h2>Order summary</h2>
+        {items.length === 0 ? (
+          <div className="empty">
+            <p>Your cart is empty, so there is nothing to order yet.</p>
+            <Link href="/#shop" className="btn btn-primary">
+              Browse parts
+            </Link>
+          </div>
+        ) : (
+          <>
+            {items.map((i) => (
+              <div key={i.product_id} className="summary-row">
+                <span className="summary-row-name">
+                  {i.name || "Item"} <span className="muted">× {i.quantity}</span>
+                </span>
+                <span className="summary-row-total">
+                  {formatNaira((i.price_ngn || 0) * i.quantity)}
+                </span>
+              </div>
+            ))}
+            <div className="summary-total">
+              <span>Total</span>
+              <span>{formatNaira(subtotal)}</span>
+            </div>
+          </>
+        )}
+      </aside>
     </form>
   );
 }

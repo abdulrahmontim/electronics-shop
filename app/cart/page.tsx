@@ -2,9 +2,10 @@
 
 import { useCart } from "@/components/CartProvider";
 import { useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
 import { formatNaira } from "@/lib/format";
 import Link from "next/link";
+
+const QUANTITIES = Array.from({ length: 20 }, (_, i) => i + 1);
 
 export default function CartPage() {
   const { items, updateQuantity, removeItem, clearCart, refreshFromSupabase } = useCart();
@@ -15,52 +16,94 @@ export default function CartPage() {
     refreshFromSupabase();
   }, []);
 
-  if (!mounted) return <div>Loading...</div>;
+  if (!mounted) {
+    return (
+      <div className="container page">
+        <h1>Your cart</h1>
+        <p className="muted">Loading your cart...</p>
+      </div>
+    );
+  }
 
   const subtotal = items.reduce((sum, i) => sum + (i.price_ngn || 0) * i.quantity, 0);
 
   return (
-    <div>
-      <h1>Cart</h1>
-      {items.length === 0 && (
-        <div className="notice">
-          Your cart is empty. <Link href="/">Continue shopping</Link>
+    <div className="container page">
+      <h1>Your cart</h1>
+
+      {items.length === 0 ? (
+        <div className="empty">
+          <p>Your cart is empty. Pick a part from the shop to start an order.</p>
+          <Link href="/#shop" className="btn btn-primary">
+            Browse parts
+          </Link>
         </div>
-      )}
-      {items.map((item) => (
-        <div key={item.product_id} className="row">
-          <div>
-            <h3>{item.name || item.product_id}</h3>
-            <p style={{ color: "var(--muted)" }}>{formatNaira(item.price_ngn || 0)}</p>
+      ) : (
+        <>
+          <div className="cart-list">
+            {items.map((item) => {
+              const name = item.name || "This part";
+              const unit = item.price_ngn || 0;
+              return (
+                <div key={item.product_id} className="cart-row">
+                  <div className="cart-row-main">
+                    <div className="cart-row-name">
+                      {item.slug ? (
+                        <Link href={`/products/${item.slug}`}>{name}</Link>
+                      ) : (
+                        name
+                      )}
+                    </div>
+                    <p className="cart-row-each">{formatNaira(unit)} each</p>
+                  </div>
+
+                  <div className="cart-row-controls">
+                    <div className="cart-row-qty">
+                      <label className="sr-only" htmlFor={`qty-${item.product_id}`}>
+                        Quantity for {name}
+                      </label>
+                      <select
+                        id={`qty-${item.product_id}`}
+                        value={item.quantity}
+                        onChange={(e) =>
+                          updateQuantity(item.product_id, Number(e.target.value))
+                        }
+                      >
+                        {QUANTITIES.map((n) => (
+                          <option key={n} value={n}>
+                            {n}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <button
+                      type="button"
+                      className="link-btn cart-row-remove"
+                      onClick={() => removeItem(item.product_id)}
+                    >
+                      Remove
+                    </button>
+                  </div>
+
+                  <p className="cart-row-total">{formatNaira(unit * item.quantity)}</p>
+                </div>
+              );
+            })}
           </div>
-          <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-            <label>
-              Qty
-              <input
-                type="number"
-                min="1"
-                max="20"
-                value={item.quantity}
-                onChange={(e) => updateQuantity(item.product_id, parseInt(e.target.value) || 1)}
-                style={{ width: "4rem", marginLeft: "0.5rem" }}
-              />
-            </label>
-            <button onClick={() => removeItem(item.product_id)}>Remove</button>
-          </div>
-        </div>
-      ))}
-      {items.length > 0 && (
-        <div style={{ marginTop: "1rem" }}>
-          <p>
-            <strong>Subtotal: {formatNaira(subtotal)}</strong>
-          </p>
-          <div style={{ display: "flex", gap: "0.5rem" }}>
-            <button onClick={clearCart}>Clear cart</button>
-            <Link href="/checkout">
-              <button>Checkout</button>
+
+          <div className="cart-summary">
+            <div className="cart-summary-head">
+              <span>Subtotal</span>
+              <span className="summary-amount">{formatNaira(subtotal)}</span>
+            </div>
+            <Link href="/checkout" className="btn btn-primary">
+              Go to checkout
             </Link>
+            <button type="button" className="btn btn-ghost" onClick={clearCart}>
+              Clear cart
+            </button>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

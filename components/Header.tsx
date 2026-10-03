@@ -25,11 +25,11 @@ export function Header() {
 
   return (
     <header>
-      <nav>
+      <div className="container header-inner">
         <Link href="/" className="logo">
           {SHOP_NAME}
         </Link>
-        <div className="nav-links">
+        <nav className="nav-links" aria-label="Main">
           <Link href="/">Shop</Link>
           {user && <Link href="/orders">Orders</Link>}
           <Link href="/cart">
@@ -38,13 +38,15 @@ export function Header() {
           </Link>
           {user ? (
             <form action="/auth/signout" method="post">
-              <button type="submit">Sign out</button>
+              <button type="submit" className="link-btn">
+                Sign out
+              </button>
             </form>
           ) : (
             <Link href="/login">Sign in</Link>
           )}
-        </div>
-      </nav>
+        </nav>
+      </div>
     </header>
   );
 }

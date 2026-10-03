@@ -19,12 +19,18 @@ export default async function LoginPage({
   const nextParam = next || "/";
 
   return (
-    <div>
+    <div className="container page login">
       <h1>Sign in</h1>
-      {error && <div className="error">Authentication failed. Please try again.</div>}
-      <div style={{ marginTop: "1rem" }}>
-        <GoogleButton next={nextParam} />
-      </div>
+      <p className="login-intro">
+        Use your Google account to check out and see your orders.
+      </p>
+      {error && (
+        <p className="msg msg-error">
+          Sign-in failed. Please try again, and check that pop-ups are allowed
+          for this site.
+        </p>
+      )}
+      <GoogleButton next={nextParam} />
     </div>
   );
 }

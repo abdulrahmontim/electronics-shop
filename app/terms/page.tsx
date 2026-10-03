@@ -8,8 +8,9 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   return (
-    <div className="prose">
-      <h1>Terms</h1>
+    <div className="container page">
+      <div className="prose">
+        <h1>Terms</h1>
       <p>
         Bench Supply is a demonstration shop. It was built as a learning project
         to show how a shop works end to end, and it is not a trading business.
@@ -48,6 +49,7 @@ export default function TermsPage() {
         We store only what is needed to show an order. The{" "}
         <Link href="/privacy">privacy page</Link> explains exactly what that is.
       </p>
+      </div>
     </div>
   );
 }

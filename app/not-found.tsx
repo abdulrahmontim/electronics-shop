@@ -1,9 +1,18 @@
+import Link from "next/link";
+
 export default function NotFound() {
   return (
-    <div>
+    <div className="container page">
       <h1>Page not found</h1>
-      <p>Sorry, we could not find that page.</p>
-      <a href="/">Continue shopping</a>
+      <div className="empty">
+        <p>
+          We could not find that page. It may have moved, or the link may be
+          wrong.
+        </p>
+        <Link href="/#shop" className="btn btn-primary">
+          Browse parts
+        </Link>
+      </div>
     </div>
   );
 }

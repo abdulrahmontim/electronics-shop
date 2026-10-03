@@ -13,6 +13,15 @@ export function formatDate(d: Date | string): string {
   }).format(date);
 }
 
+export function formatDay(d: Date | string): string {
+  const date = d instanceof Date ? d : new Date(d);
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(date);
+}
+
 export function safeNext(path: string | null | undefined): string {
   if (!path) return "/";
   if (path.startsWith("//")) return "/";
