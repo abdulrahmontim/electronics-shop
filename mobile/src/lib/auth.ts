@@ -49,6 +49,11 @@ export async function signInWithGoogle(next?: string): Promise<SignInResult> {
   const supabase = getSupabase();
   const redirectTo = authRedirectUri();
 
+  // Printed so the exact string can be added to the Supabase redirect URL list.
+  // Android's own scheme handling decides whether this comes back with one or
+  // two slashes, and guessing wrong here means the sign-in silently bounces.
+  console.log('[auth] redirect URI:', redirectTo);
+
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
