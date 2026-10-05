@@ -1,0 +1,40 @@
+# Files that must never be uploaded to EAS. These are already git-ignored, but
+# EAS builds package the working directory rather than a git archive, so the
+# exclusions are repeated here.
+
+# Real credentials. Only the .example templates belong in version control.
+.env
+.env.*
+!.env.example
+mobile/.env
+mobile/.env.*
+!mobile/.env.example
+
+# Signing material.
+*.jks
+*.keystore
+*.p12
+*.pfx
+*.pem
+*.key
+
+# Native build output and local Gradle state.
+android/.gradle
+android/app/build
+android/build
+android/local.properties
+ios/Pods
+ios/build
+
+# VCS and CI internals.
+.git
+.github
+.claude
+
+# Local caches and logs.
+.expo
+.expo-shared
+node_modules
+*.log
+npm-debug.log*
+.DS_Store
