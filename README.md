@@ -68,7 +68,16 @@ The `mobile/` folder holds an Expo app that is a native client for this same sho
 Two things must be in place first:
 
 - `supabase/cart.sql` has been run (step 1.4 above), otherwise the cart is not shared.
-- `benchsupply://auth/callback` has been added to Supabase Authentication > URL Configuration > Redirect URLs, otherwise Google sign-in cannot return to the app.
+- These redirect URLs have been added to Supabase Authentication > URL Configuration > Redirect URLs:
+
+  ```
+  benchsupply://auth/callback
+  exp://**/--/auth/callback
+  ```
+
+  The first is what a development build or APK uses. The second only matters for testing in Expo Go. If the URI the app is using is not in the allowlist, Supabase does not show an error: it redirects to the Site URL instead, which signs the customer in on the web shop and leaves the phone showing a failed sign-in.
+
+  Google Cloud Console needs no change for mobile. The OAuth handshake starts at Supabase, so Google only ever sees the Supabase callback URI.
 
 Then:
 
@@ -95,4 +104,4 @@ The app never receives the Mailgun key or a Supabase service role key. Orders ar
 - Missing environment variables: verify all vars are set in Vercel/local
 - App says "Bench Supply needs configuring": `mobile/.env` is missing or the dev server needs `--clear`, because `EXPO_PUBLIC_` values are baked in when the bundle is built
 - Cart does not follow you between web and phone: `supabase/cart.sql` has not been run
-- Google sign-in on the phone closes without signing in: `benchsupply://auth/callback` is not an allowed Supabase redirect URL, or you are in Expo Go instead of a development build
+- Google sign-in on the phone closes without signing in: `benchsupply://auth/callback` is not an allowed Supabase redirect URL, or you are in Expo Go instead of a development build. The app prints the exact URI it is using as `[auth] redirect URI:` in the Metro terminal.

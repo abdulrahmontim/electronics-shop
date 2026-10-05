@@ -22,8 +22,14 @@ let client: SupabaseClient | null = null;
  * another customer's rows because row level security decides that.
  *
  * Sessions are kept in AsyncStorage so a signed-in customer stays signed in
- * after the app is closed. The implicit flow is used because a phone has no
- * cookie jar and cannot keep a PKCE verifier between the browser and the app.
+ * after the app is closed.
+ *
+ * PKCE is used, the same flow the web app uses. A phone has no cookie jar, but
+ * that is not a problem: supabase-js keeps the code verifier in the same
+ * AsyncStorage it keeps the session in, so it survives the round trip through
+ * Google's browser tab. This is strictly better than the implicit flow it
+ * replaces, because no access or refresh token is ever put into a URL that
+ * passes through the browser and the OS.
  */
 export function getSupabase(): SupabaseClient {
   if (!url || !anonKey) {
@@ -35,8 +41,10 @@ export function getSupabase(): SupabaseClient {
         storage: AsyncStorage,
         persistSession: true,
         autoRefreshToken: true,
+        // The redirect is consumed by expo-web-browser, not by a page load, so
+        // supabase-js must not try to read the URL itself.
         detectSessionInUrl: false,
-        flowType: 'implicit',
+        flowType: 'pkce',
       },
     });
   }

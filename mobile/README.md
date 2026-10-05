@@ -16,8 +16,31 @@ Two things must be done outside this folder before the app can show data:
 1. Run `supabase/cart.sql` from the repository root in the Supabase SQL editor.
    It creates the `cart_items` table that makes the cart shared between web and
    mobile.
-2. Add `benchsupply://auth/callback` to Supabase Auth redirect URLs
-   (Authentication > URL Configuration > Redirect URLs).
+2. Add the redirect URLs listed below to Supabase Auth (Authentication > URL
+   Configuration > Redirect URLs).
+
+## Redirect URLs to add in Supabase
+
+Add these exact strings to **Authentication > URL Configuration > Redirect URLs**:
+
+| URL | When it is used |
+| --- | --- |
+| `benchsupply://auth/callback` | Development build and APK. This is the one that matters. |
+| `exp://**/--/auth/callback` | Only for testing in Expo Go. |
+
+Why both: the app builds its redirect URI with `Linking.createURL`, so the value
+depends on how the app is running. A real install produces `benchsupply://auth/callback`.
+Expo Go produces `exp://<your-lan-ip>:8081/--/auth/callback` instead, and Expo Go
+does not register the `benchsupply` scheme.
+
+If the redirect URI is missing from the allowlist, Supabase does not report an
+error. It quietly redirects to the Site URL instead, which signs the customer in
+on the **web** shop and leaves the phone showing a failed sign-in. If that
+happens, check this list first.
+
+**Google Cloud Console needs no change for mobile.** The OAuth handshake starts
+at `https://<project-ref>.supabase.co/auth/v1/authorize`, so Google only ever
+sees the Supabase callback URI that is already registered there.
 
 ## Run it
 
@@ -74,14 +97,27 @@ The database is the source of truth, not the phone.
 
 ## How signing in works
 
-`expo-web-browser` opens Google's sign-in page in a system tab with the Supabase
-Google provider, the same provider the web shop uses. The app uses the implicit
-flow, parses the tokens out of the callback URL and hands them to
-`supabase.auth.setSession`. The session is stored in AsyncStorage, so customers
-stay signed in across restarts.
+The app uses **PKCE**, the same flow as the web shop, so both resolve to the same
+Supabase user and therefore the same orders and shared cart.
 
-This requires `benchsupply://auth/callback` to be allowed as a Supabase redirect
-URL.
+`expo-web-browser` opens Google's consent screen in a system tab.
+`signInWithOAuth` with `skipBrowserRedirect` returns the authorisation URL rather
+than opening it, and Supabase stores a single-use PKCE code verifier in
+AsyncStorage. `openAuthSessionAsync` watches for the redirect to come back to the
+app, and the returned `?code=` is exchanged with `exchangeCodeForSession`. The
+session is established inside the app, and the tab closes itself.
+
+No access or refresh token ever passes through a URL. The browser is only Google's
+consent screen; nothing about the mobile session depends on a cookie belonging to
+the web app.
+
+The session is stored in AsyncStorage, so customers stay signed in across normal
+app restarts.
+
+This requires the redirect URL for the current run to be in the Supabase allowlist,
+and a development build or APK. Expo Go cannot complete the flow, because it does
+not register the `benchsupply://` scheme; the app detects this and says so instead
+of failing silently.
 
 ## Build an APK
 
