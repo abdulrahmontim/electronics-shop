@@ -1,3 +1,4 @@
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import { sendOrderConfirmation } from "@/lib/mailgun";
@@ -6,15 +7,78 @@ function isValidUuid(id: string) {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id);
 }
 
-export async function POST(request: NextRequest) {
-  const supabase = await createServerSupabaseClient();
+/**
+ * Works out who is ordering and returns a client that acts as that user.
+ *
+ * The browser signs in through @supabase/ssr, so its session arrives as cookies.
+ * The mobile app cannot hold those cookies, so it sends the Supabase access
+ * token as a bearer token instead. Both paths end up with a client whose
+ * requests carry the caller's own JWT, so place_order and row level security
+ * still see the real user. No service-role key is involved either way.
+ */
+async function getOrderClient(
+  request: NextRequest
+): Promise<{ db: SupabaseClient; userId: string } | { error: NextResponse }> {
+  const header = request.headers.get("authorization") ?? "";
+  const bearer = header.toLowerCase().startsWith("bearer ")
+    ? header.slice(7).trim()
+    : "";
+
+  if (bearer) {
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    if (!url || !anonKey) {
+      return {
+        error: NextResponse.json(
+          { error: "Something went wrong" },
+          { status: 500 }
+        ),
+      };
+    }
+
+    const db = createClient(url, anonKey, {
+      global: { headers: { Authorization: `Bearer ${bearer}` } },
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false,
+      },
+    });
+
+    const {
+      data: { user },
+      error,
+    } = await db.auth.getUser();
+    if (error || !user) {
+      return {
+        error: NextResponse.json(
+          { error: "Sign in to place an order" },
+          { status: 401 }
+        ),
+      };
+    }
+    return { db, userId: user.id };
+  }
+
+  const db = await createServerSupabaseClient();
   const {
     data: { user },
-  } = await supabase.auth.getUser();
-
+  } = await db.auth.getUser();
   if (!user) {
-    return NextResponse.json({ error: "Sign in to place an order" }, { status: 401 });
+    return {
+      error: NextResponse.json(
+        { error: "Sign in to place an order" },
+        { status: 401 }
+      ),
+    };
   }
+  return { db, userId: user.id };
+}
+
+export async function POST(request: NextRequest) {
+  const session = await getOrderClient(request);
+  if ("error" in session) return session.error;
+  const { db: supabase, userId } = session;
 
   try {
     const body = await request.json();
@@ -90,6 +154,14 @@ export async function POST(request: NextRequest) {
     } catch (e) {
       console.error("email failed", e);
       emailSent = false;
+    }
+
+    // The order is saved, so the shared cart is emptied here. A missing
+    // cart_items table must not turn a placed order into a failed request.
+    try {
+      await supabase.from("cart_items").delete().eq("user_id", userId);
+    } catch (e) {
+      console.error("cart clear failed", e);
     }
 
     return NextResponse.json({ orderId, emailSent });
